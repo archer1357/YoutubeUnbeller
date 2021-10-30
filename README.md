@@ -14,6 +14,14 @@ Goto your https://www.youtube.com/feed/channels and then run this in developer's
 
 (function ()
 {
+	var fromIndices = [1,0];
+	var toIndex = 2;
+	
+	var fromNames=['all','personalized','no'];
+	
+	var masthead=document.getElementById('masthead-container');
+	masthead.parentElement.removeChild(masthead);
+	
     function ToNextEntry()
     {
         var subscribe = document.querySelector("#subscribe-button");
@@ -37,8 +45,16 @@ Goto your https://www.youtube.com/feed/channels and then run this in developer's
         }
         
         belldropdown.closest('ytd-channel-renderer').scrollIntoView();
-                
-        if(belldropdown.querySelector('button').getAttribute('aria-label').search('no notifications') != -1)
+        var curBellStatus = false;
+		
+		for(var i=0;i<fromIndices.length;i++)
+		{
+			var fromIndex = fromIndices[i];
+			curBellStatus = curBellStatus || (belldropdown.querySelector('button').getAttribute('aria-label').search(fromNames[fromIndex]+' notifications')  != -1);
+		}
+		
+		
+        if(!curBellStatus)
         {
             setTimeout(ToNextEntry,500);
         }
@@ -47,7 +63,7 @@ Goto your https://www.youtube.com/feed/channels and then run this in developer's
             belldropdown.click();
             
             setTimeout(function () { 
-                document.getElementsByTagName('ytd-menu-service-item-renderer')[2].click();
+                document.getElementsByTagName('ytd-menu-service-item-renderer')[toIndex].click(); //2
                 setTimeout(ToNextEntry,1500);
             },1500);
         }
@@ -63,8 +79,8 @@ Goto your https://www.youtube.com/feed/channels and then run this in developer's
 
 ## Modifying it
 
-* change the `no` in `'no notifications'` to `all` or `personalized`.
-* change the array index `2` in `document.getElementsByTagName("ytd-menu-service-item-renderer")[2]` to `0` or `1`.
+* change fromIndices and  toIndex
+* index 0 = all notifications, 1 == personalized notifications, 2 = no notifications
 
 ## Credit
 * https://stackoverflow.com/questions/48874382/how-to-unsubscribe-from-all-the-youtube-channels-at-once
